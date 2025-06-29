@@ -704,9 +704,9 @@ export async function DELETE(
       where: { id: protocolId }
     });
 
-    return NextResponse.json({ message: 'Protocolo excluído com sucesso' });
+    return NextResponse.json({ message: 'Protocol deleted successfully' });
   } catch (error) {
     console.error('Error deleting protocol:', { error: error instanceof Error ? error.message : 'Unknown error' });
-    return NextResponse.json({ error: 'Erro ao excluir protocolo' }, { status: 500 });
+    return NextResponse.json({ error: 'Error deleting protocol' }, { status: 500 });
   }
 } 

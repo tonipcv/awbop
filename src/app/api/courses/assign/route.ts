@@ -49,14 +49,22 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify patient exists and belongs to doctor
-    const patient = await prisma.user.findUnique({
-      where: { id: patientId },
+    const patient = await prisma.user.findFirst({
+      where: {
+        id: patientId,
+        role: 'PATIENT',
+        patientRelationships: {
+          some: {
+            doctorId: session.user.id,
+            isActive: true
+          }
+        }
+      },
       select: {
         id: true,
         name: true,
         email: true,
-        role: true,
-        doctorId: true
+        role: true
       }
     });
 
@@ -64,8 +72,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Patient not found' }, { status: 404 });
     }
 
-    if (patient.role !== 'PATIENT' || patient.doctorId !== session.user.id) {
-      return NextResponse.json({ error: 'Patient does not belong to you' }, { status: 403 });
+    if (patient.role !== 'PATIENT') {
+      return NextResponse.json({ error: 'User is not a patient' }, { status: 403 });
     }
 
     // Check if course is already assigned to patient

@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState, createContext, useContext, useMemo } from 'react';
+import { SYSTEM_LOGO_URL } from '@/config/constants';
 
 interface NavItem {
   href: string;
@@ -957,7 +958,7 @@ export default function Navigation() {
                   <span className="text-xs text-gray-500">Powered by</span>
                   <div className="relative w-4 h-4">
                     <Image
-                      src="/logo.png"
+                      src={SYSTEM_LOGO_URL}
                       alt="Boop Logo"
                       fill
                       className="object-contain"

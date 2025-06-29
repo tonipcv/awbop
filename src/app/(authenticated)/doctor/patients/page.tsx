@@ -257,7 +257,7 @@ export default function PatientsPage() {
 
   const addPatient = async () => {
     if (!newPatient.name.trim() || !newPatient.email.trim()) {
-      alert('Nome e email são obrigatórios');
+      toast.error('Nome e email são obrigatórios');
       return;
     }
 
@@ -293,7 +293,13 @@ export default function PatientsPage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Erro ao criar paciente');
+        // Se o erro for que o paciente já existe, mostrar mensagem específica
+        if (response.status === 400 && result.error) {
+          toast.error(result.error);
+        } else {
+          throw new Error(result.error || 'Erro ao criar paciente');
+        }
+        return;
       }
 
       // Automatically send password reset email
@@ -563,128 +569,128 @@ export default function PatientsPage() {
               <h1 className="text-2xl font-semibold text-gray-900">Clients</h1>
               <p className="text-sm text-gray-500 mt-1">
                 Manage your clients and their protocols
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button
-                onClick={() => setShowAddPatient(true)}
-                className="bg-[#5154e7] hover:bg-[#4145d1] text-white shadow-md rounded-xl font-semibold"
-              >
-                <UserPlusIcon className="h-5 w-5 mr-2" />
-                Add Client
-              </Button>
-            </div>
+            </p>
           </div>
+            <div className="flex flex-col sm:flex-row gap-3">
+            <Button 
+              onClick={() => setShowAddPatient(true)}
+                className="bg-[#5154e7] hover:bg-[#4145d1] text-white shadow-md rounded-xl font-semibold"
+            >
+                <UserPlusIcon className="h-5 w-5 mr-2" />
+              Add Client
+            </Button>
+          </div>
+        </div>
 
           {isLoading ? (
             <div className="text-center py-12">
               <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#5154e7] border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
               <p className="mt-4 text-gray-600">Loading clients...</p>
-            </div>
+              </div>
           ) : patients.length === 0 ? (
             <div className="text-center py-12">
               <div className="mb-4">
                 <UserGroupIcon className="mx-auto h-12 w-12 text-gray-400" />
-              </div>
+                        </div>
               <h3 className="mt-2 text-sm font-semibold text-gray-900">No clients registered</h3>
               <p className="mt-1 text-sm text-gray-500">Start by adding your first client</p>
               <div className="mt-6">
-                <Button
+                      <Button
                   onClick={() => setShowAddPatient(true)}
                   className="bg-[#5154e7] hover:bg-[#4145d1] text-white shadow-md rounded-xl font-semibold"
                 >
                   <UserPlusIcon className="h-5 w-5 mr-2" />
                   Add Client
-                </Button>
-              </div>
-            </div>
+                      </Button>
+                    </div>
+                  </div>
           ) : (
             <>
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
-                <div className="flex-1">
-                  <div className="relative">
+                    <div className="flex-1">
+                      <div className="relative">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                       <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-                    </div>
+                      </div>
                     <input
                       type="text"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                       placeholder="Search clients..."
                       className="block w-full rounded-xl border-0 py-3 pl-10 pr-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#5154e7] sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
+              />
+            </div>
+            </div>
               </div>
 
-              <div className="space-y-4">
-                {currentPatients.map((patient) => {
-                  const activeProtocol = getActiveProtocol(patient);
+            <div className="space-y-4">
+            {currentPatients.map((patient) => {
+              const activeProtocol = getActiveProtocol(patient);
                   const totalProtocols = patient.assignedProtocols?.length || 0;
-                  
-                  return (
-                    <Card key={patient.id} className="bg-white border-gray-200 shadow-sm rounded-xl hover:shadow-md transition-shadow">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <h3 className="text-base font-semibold text-gray-900">
-                                  {patient.name || 'Name not provided'}
-                                </h3>
-                                <span className="text-sm text-gray-500">• {patient.email}</span>
-                                {activeProtocol && (
-                                  <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs bg-teal-100 text-teal-700 font-medium">
-                                    Active
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              asChild
-                              className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg h-8 w-8 p-0"
-                            >
-                              <Link href={`/doctor/patients/${patient.id}`}>
-                                <EyeIcon className="h-4 w-4" />
-                              </Link>
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openEditModal(patient)}
-                              className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg h-8 w-8 p-0"
-                            >
-                              <PencilIcon className="h-3 w-3" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => sendPasswordResetEmail(patient.id, patient.email || '')}
-                              disabled={sendingEmailId === patient.id}
-                              className="border-blue-300 bg-white text-blue-700 hover:bg-blue-50 hover:border-blue-400 rounded-lg font-medium h-8 px-2"
-                              title="Send password setup email"
-                            >
-                              {sendingEmailId === patient.id ? (
-                                <span className="h-3 w-3 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></span>
-                              ) : (
-                                <PaperAirplaneIcon className="h-3 w-3" />
-                              )}
-                            </Button>
+              
+              return (
+                  <Card key={patient.id} className="bg-white border-gray-200 shadow-sm rounded-xl hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                              <h3 className="text-base font-semibold text-gray-900">
+                              {patient.name || 'Name not provided'}
+                            </h3>
+                            <span className="text-sm text-gray-500">• {patient.email}</span>
+                            {activeProtocol && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs bg-teal-100 text-teal-700 font-medium">
+                                Active
+                              </span>
+                            )}
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
+                      </div>
+                      
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          asChild
+                            className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg h-8 w-8 p-0"
+                        >
+                          <Link href={`/doctor/patients/${patient.id}`}>
+                            <EyeIcon className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => openEditModal(patient)}
+                          className="text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg h-8 w-8 p-0"
+                        >
+                          <PencilIcon className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => sendPasswordResetEmail(patient.id, patient.email || '')}
+                          disabled={sendingEmailId === patient.id}
+                          className="border-blue-300 bg-white text-blue-700 hover:bg-blue-50 hover:border-blue-400 rounded-lg font-medium h-8 px-2"
+                          title="Send password setup email"
+                        >
+                          {sendingEmailId === patient.id ? (
+                            <span className="h-3 w-3 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></span>
+                          ) : (
+                            <PaperAirplaneIcon className="h-3 w-3" />
+                            )}
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+                  </>
+                )}
               </div>
-            </>
-          )}
-        </div>
       </div>
     </div>
   );

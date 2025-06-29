@@ -58,10 +58,10 @@ export default function OnboardingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentScreen, setCurrentScreen] = useState("welcome");
 
-  // Calcula o currentStepData com base no currentStep
+  // Calculate currentStepData based on currentStep
   const currentStepData = currentStep === 0 ? null : template?.steps[currentStep - 1];
 
-  // Calcula o progresso
+  // Calculate progress
   const progress = ((currentStep + 1) / ((template?.steps.length || 0) + 1)) * 100;
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export default function OnboardingPage() {
         return;
       }
 
-      // Se não estiver no último passo, apenas avança
+      // If not on the last step, just advance
       if (currentStep < template!.steps.length) {
         setCurrentStep((prev) => prev + 1);
         return;
@@ -148,7 +148,7 @@ export default function OnboardingPage() {
         throw new Error("Error submitting form");
       }
 
-      // Mostrar tela de sucesso
+      // Show success screen
       setCurrentScreen("success");
     } catch (error) {
       console.error("Error submitting form:", error);

@@ -6,9 +6,9 @@ export default function SuccessPage() {
       <div className="container max-w-2xl mx-auto">
         <Card>
           <CardHeader>
-            <CardTitle>Formulário enviado com sucesso!</CardTitle>
+            <CardTitle>Form submitted successfully!</CardTitle>
             <CardDescription>
-              Obrigado por preencher o formulário. O médico entrará em contato em breve.
+              Thank you for filling out the form. The doctor will contact you soon.
             </CardDescription>
           </CardHeader>
         </Card>

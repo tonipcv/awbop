@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import nodemailer from 'nodemailer';
+import { SYSTEM_LOGO_URL } from '@/config/constants';
 
 // Usar a mesma configuração de email existente
 const transporter = nodemailer.createTransport({
@@ -179,9 +180,15 @@ export async function sendReferralNotification(leadId: string) {
                   Obrigado por permitir que ${referrer ? referrer.name : 'alguém especial'} compartilhe nossos serviços com você!
                 </p>
                 <p style="color: #94a3b8; font-size: 12px; margin: 0;">
-                  ${clinicInfo?.name || 'CXLUS'} - Cuidando de você com excelência<br>
+                  ${clinicInfo?.name || 'CXLUS'}<br>
                   Este é um email automático, mas você pode responder se tiver dúvidas.
                 </p>
+                <div style="padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                  <p style="color: #999999; font-size: 11px; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
+                    Powered by
+                  </p>
+                  <img src="${SYSTEM_LOGO_URL}" alt="CXLUS" style="height: 20px; opacity: 0.7;">
+                </div>
               </div>
 
             </div>

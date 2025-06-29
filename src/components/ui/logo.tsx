@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { SYSTEM_LOGO_URL } from '@/config/constants';
 
 interface LogoProps {
   className?: string;
@@ -8,7 +9,7 @@ export function Logo({ className }: LogoProps) {
   return (
     <div className={`relative group ${className || ''}`}>
       <Image 
-        src="/logo.png" 
+        src={SYSTEM_LOGO_URL}
         alt="Logo" 
         width={80} 
         height={26} 

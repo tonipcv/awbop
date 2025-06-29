@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeSlashIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
+import { SYSTEM_LOGO_URL } from '@/config/constants';
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -187,7 +188,7 @@ function ResetPasswordForm() {
                 <div className="flex items-center justify-center gap-2">
                   <span className="text-xs text-gray-500">Powered by</span>
                   <Image
-                    src="/logo.png"
+                    src={SYSTEM_LOGO_URL}
                     alt="Sistema"
                     width={32}
                     height={10}
@@ -222,7 +223,7 @@ function ResetPasswordForm() {
                 <div className="flex items-center justify-center gap-2">
                   <span className="text-xs text-gray-500">Powered by</span>
                   <Image
-                    src="/logo.png"
+                    src={SYSTEM_LOGO_URL}
                     alt="Sistema"
                     width={32}
                     height={10}
@@ -349,7 +350,7 @@ function ResetPasswordForm() {
             <div className="flex items-center justify-center gap-2">
               <span className="text-xs text-gray-500">Powered by</span>
               <Image
-                src="/logo.png"
+                src={SYSTEM_LOGO_URL}
                 alt="Sistema"
                 width={32}
                 height={10}

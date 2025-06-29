@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { signIn, getSession } from 'next-auth/react';
 import Image from 'next/image';
 import { Loader2, ArrowRight, MapPin, Globe } from 'lucide-react';
+import { SYSTEM_LOGO_URL } from '@/config/constants';
 
 interface ClinicData {
   id: string;
@@ -264,7 +265,7 @@ export default function ClinicLoginPage() {
             <div className="flex items-center justify-center gap-2">
               <span className="text-xs text-gray-500">Powered by</span>
               <Image
-                src="/logo.png"
+                src={SYSTEM_LOGO_URL}
                 alt="Sistema"
                 width={32}
                 height={10}

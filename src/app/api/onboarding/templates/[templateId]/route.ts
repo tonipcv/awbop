@@ -96,8 +96,8 @@ export async function PUT(
       data: {
         name,
         description,
-        isPublic,
-        isActive,
+        isActive: true,
+        isPublic: false,
         // Welcome screen data
         welcomeItems: {
           set: [] // Reset the array since we're not using it anymore

@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
+import { SYSTEM_LOGO_URL } from '@/config/constants';
 
 // Configuração do transporter de email
 if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_FROM) {
@@ -205,7 +206,7 @@ export async function POST(
                   <p style="color: #999999; font-size: 11px; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
                     Powered by
                   </p>
-                  <img src="${process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000'}/logo.png" alt="CXLUS" style="height: 20px; opacity: 0.7;">
+                  <img src="${SYSTEM_LOGO_URL}" alt="CXLUS" style="height: 20px; opacity: 0.7;">
                 </div>
               </div>
             </div>

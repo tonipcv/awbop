@@ -81,13 +81,13 @@ export default function OnboardingPage() {
       try {
         const response = await fetch("/api/onboarding/templates");
         if (!response.ok) {
-          throw new Error("Erro ao buscar templates");
+          throw new Error("Error loading templates");
         }
         const data = await response.json();
         setTemplates(data);
       } catch (error) {
-        console.error("Erro ao buscar templates:", error);
-        toast.error("Erro ao carregar templates");
+        console.error("Error loading templates:", error);
+        toast.error("Error loading templates");
       } finally {
         setIsLoading(false);
       }
@@ -250,7 +250,7 @@ export default function OnboardingPage() {
                 Onboarding
               </h1>
               <p className="text-gray-600 font-medium">
-                Gerencie seus formulários de onboarding para novos pacientes
+                Manage your onboarding forms for new patients
               </p>
             </div>
             
@@ -263,7 +263,7 @@ export default function OnboardingPage() {
               >
                 <div>
                   <DocumentTextIcon className="h-4 w-4 mr-2 inline" />
-                  Respostas
+                  Responses
                 </div>
               </Button>
               <Button 
@@ -273,7 +273,7 @@ export default function OnboardingPage() {
               >
                 <div>
                   <PlusIcon className="h-4 w-4 mr-2 inline" />
-                  Novo Formulário
+                  New Form
                 </div>
               </Button>
             </div>
@@ -287,7 +287,7 @@ export default function OnboardingPage() {
                   <div className="relative">
                     <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
-                      placeholder="Buscar formulários..."
+                      placeholder="Search forms..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-10 border-gray-300 focus:border-[#5154e7] focus:ring-[#5154e7] bg-white text-gray-700 placeholder:text-gray-500 rounded-xl h-12"
@@ -304,7 +304,7 @@ export default function OnboardingPage() {
                       : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded-xl h-10 px-4 font-semibold"
                     }
                   >
-                    Todos
+                    All
                   </Button>
                   <Button
                     variant={filter === "active" ? "default" : "outline"}
@@ -315,7 +315,7 @@ export default function OnboardingPage() {
                       : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded-xl h-10 px-4 font-semibold"
                     }
                   >
-                    Ativos
+                    Active
                   </Button>
                   <Button
                     variant={filter === "templates" ? "default" : "outline"}
@@ -326,7 +326,7 @@ export default function OnboardingPage() {
                       : "border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded-xl h-10 px-4 font-semibold"
                     }
                   >
-                    Públicos
+                    Public
                   </Button>
                 </div>
               </div>
@@ -345,16 +345,16 @@ export default function OnboardingPage() {
                         <div className="flex gap-2">
                           {template.isActive ? (
                             <Badge className="bg-green-100 text-green-700 hover:bg-green-200 rounded-lg px-2 py-1 text-xs font-medium">
-                              Ativo
+                              Active
                             </Badge>
                           ) : (
                             <Badge variant="secondary" className="bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg px-2 py-1 text-xs font-medium">
-                              Inativo
+                              Inactive
                             </Badge>
                           )}
                           {template.isPublic && (
                             <Badge variant="secondary" className="bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg px-2 py-1 text-xs font-medium">
-                              Público
+                              Public
                             </Badge>
                           )}
                         </div>
@@ -365,12 +365,12 @@ export default function OnboardingPage() {
                       <div className="flex items-center gap-6 text-sm text-gray-500">
                         <div className="flex items-center gap-2">
                           <DocumentTextIcon className="h-4 w-4" />
-                          {template.steps.length} {template.steps.length === 1 ? "pergunta" : "perguntas"}
+                          {template.steps.length} {template.steps.length === 1 ? "question" : "questions"}
                         </div>
                         {template._count && (
                           <div className="flex items-center gap-2">
                             <UsersIcon className="h-4 w-4" />
-                            {template._count.responses} {template._count.responses === 1 ? "resposta" : "respostas"}
+                            {template._count.responses} {template._count.responses === 1 ? "response" : "responses"}
                           </div>
                         )}
                       </div>
@@ -403,9 +403,9 @@ export default function OnboardingPage() {
                 <CardContent className="p-8">
                   <div className="text-center">
                     <DocumentTextIcon className="h-12 w-12 mx-auto text-gray-400" />
-                    <h3 className="mt-2 text-sm font-medium text-gray-900">Nenhum formulário encontrado</h3>
+                    <h3 className="mt-2 text-sm font-medium text-gray-900">No forms found</h3>
                     <p className="mt-1 text-sm text-gray-500">
-                      Comece criando seu primeiro formulário de onboarding
+                      Get started by creating your first onboarding form
                     </p>
                     <div className="mt-6">
                       <Button
@@ -413,7 +413,7 @@ export default function OnboardingPage() {
                         className="bg-[#5154e7] hover:bg-[#4145d1] text-white rounded-xl px-6 shadow-md font-semibold"
                       >
                         <PlusIcon className="h-4 w-4 mr-2" />
-                        Novo Formulário
+                        New Form
                       </Button>
                     </div>
                   </div>

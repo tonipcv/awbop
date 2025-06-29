@@ -5,6 +5,7 @@ import { useState } from "react";
 import Image from 'next/image';
 import Link from "next/link";
 import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { SYSTEM_LOGO_URL } from '@/config/constants';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -47,7 +48,7 @@ export default function ForgotPassword() {
             <div className="text-center mb-8">
               <div className="flex justify-center items-center mb-4">
                 <Image
-                  src="/logo.png"
+                  src={SYSTEM_LOGO_URL}
                   alt="Logo"
                   width={40}
                   height={13}
@@ -92,7 +93,7 @@ export default function ForgotPassword() {
           <div className="text-center mb-8">
             <div className="flex justify-center items-center mb-4">
               <Image
-                src="/logo.png"
+                src={SYSTEM_LOGO_URL}
                 alt="Logo"
                 width={40}
                 height={13}

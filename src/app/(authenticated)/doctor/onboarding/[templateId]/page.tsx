@@ -414,35 +414,6 @@ export default function TemplatePage() {
                     />
                   </div>
                 </div>
-
-                <div className="flex flex-col sm:flex-row gap-6 pt-4 border-t border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label className="text-gray-900">Public Form</Label>
-                      <p className="text-sm text-gray-500">
-                        Other doctors can use this form
-                      </p>
-                    </div>
-                    <Switch
-                      checked={isPublic}
-                      onCheckedChange={setIsPublic}
-                      className="ml-4"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-0.5">
-                      <Label className="text-gray-900">Active Form</Label>
-                      <p className="text-sm text-gray-500">
-                        The form will be available for use
-                      </p>
-                    </div>
-                    <Switch
-                      checked={isActive}
-                      onCheckedChange={setIsActive}
-                      className="ml-4"
-                    />
-                  </div>
-                </div>
               </CardContent>
             </Card>
 

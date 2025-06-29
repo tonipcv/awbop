@@ -20,7 +20,7 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { enUS } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import CheckinQuestionsManager from '@/components/protocol/checkin-questions-manager';
 import CheckinResponsesDashboard from '@/components/checkin/checkin-responses-dashboard';
@@ -365,7 +365,7 @@ export default function ProtocolDetailPage() {
               >
                 <div className="flex items-center gap-2">
                   <CalendarDaysIcon className="w-4 h-4" />
-                  Visão Geral
+                  Overview
                 </div>
               </button>
               
@@ -380,7 +380,7 @@ export default function ProtocolDetailPage() {
               >
                 <div className="flex items-center gap-2">
                   <Cog6ToothIcon className="w-4 h-4" />
-                  Perguntas Check-in
+                  Check-in Questions
                 </div>
               </button>
               
@@ -395,7 +395,7 @@ export default function ProtocolDetailPage() {
               >
                 <div className="flex items-center gap-2">
                   <ChartBarIcon className="w-4 h-4" />
-                  Respostas Check-in
+                  Check-in Responses
                 </div>
               </button>
             </nav>
@@ -590,7 +590,7 @@ export default function ProtocolDetailPage() {
                             <div className="flex-1">
                               <p className="font-bold text-gray-900">{assignment.user.name || 'No name'}</p>
                               <p className="text-sm text-gray-600 font-medium">
-                                Started on {format(new Date(assignment.startDate), 'dd/MM/yyyy', { locale: ptBR })}
+                                Started on {format(new Date(assignment.startDate), 'MM/dd/yyyy', { locale: enUS })}
                               </p>
                             </div>
                           </div>
@@ -639,7 +639,7 @@ export default function ProtocolDetailPage() {
                                 {/* Render direct day tasks */}
                                 {day.tasks && day.tasks.length > 0 && (
                                   <div className="space-y-4">
-                                    <h5 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Day Tasks</h5>
+                                    <h5 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">Tasks</h5>
                                     {day.tasks
                                       .sort((a, b) => a.order - b.order)
                                       .map((task) => (

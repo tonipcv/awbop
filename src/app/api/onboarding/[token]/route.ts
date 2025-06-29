@@ -10,12 +10,12 @@ export async function GET(
 
     if (!token) {
       return NextResponse.json(
-        { error: "Token é obrigatório" },
+        { error: "Token is required" },
         { status: 400 }
       );
     }
 
-    // Busca a resposta pelo token
+    // Find response by token
     const response = await prisma.onboardingResponse.findUnique({
       where: { token },
       include: {
@@ -68,7 +68,7 @@ export async function GET(
 
     if (!response) {
       return NextResponse.json(
-        { error: "Formulário não encontrado" },
+        { error: "Form not found" },
         { status: 404 }
       );
     }

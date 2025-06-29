@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Verificar se é médico
@@ -18,13 +18,13 @@ export async function POST(request: Request) {
     });
 
     if (!user || user.role !== 'DOCTOR') {
-      return NextResponse.json({ error: 'Acesso negado. Apenas médicos podem atribuir protocolos.' }, { status: 403 });
+      return NextResponse.json({ error: 'Access denied. Only doctors can assign protocols.' }, { status: 403 });
     }
 
     const { protocolId, patientId, startDate } = await request.json();
 
     if (!protocolId || !patientId || !startDate) {
-      return NextResponse.json({ error: 'ID do protocolo, ID do paciente e data de início são obrigatórios' }, { status: 400 });
+      return NextResponse.json({ error: 'Protocol ID, patient ID and start date are required' }, { status: 400 });
     }
 
     // Verificar se o protocolo existe e pertence ao médico
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     });
 
     if (!protocol) {
-      return NextResponse.json({ error: 'Protocolo não encontrado' }, { status: 404 });
+      return NextResponse.json({ error: 'Protocol not found' }, { status: 404 });
     }
 
     // Verificar se o paciente existe e pertence ao médico
@@ -44,12 +44,17 @@ export async function POST(request: Request) {
       where: {
         id: patientId,
         role: 'PATIENT',
-        doctorId: session.user.id
+        patientRelationships: {
+          some: {
+            doctorId: session.user.id,
+            isActive: true
+          }
+        }
       }
     });
 
     if (!patient) {
-      return NextResponse.json({ error: 'Paciente não encontrado ou não pertence a este médico' }, { status: 404 });
+      return NextResponse.json({ error: 'Patient not found or does not belong to this doctor' }, { status: 404 });
     }
 
     // Verificar se já existe uma atribuição (independente do status)
@@ -63,7 +68,7 @@ export async function POST(request: Request) {
     if (existingAssignment) {
       // Se já existe uma atribuição ativa, retornar erro
       if (existingAssignment.isActive && existingAssignment.status === 'ACTIVE') {
-        return NextResponse.json({ error: 'Este protocolo já está ativo para este paciente' }, { status: 400 });
+        return NextResponse.json({ error: 'This protocol is already active for this patient' }, { status: 400 });
       }
       
       // Se existe mas está inativa, reativar a atribuição existente
@@ -179,7 +184,7 @@ export async function POST(request: Request) {
     return NextResponse.json(assignment, { status: 201 });
   } catch (error) {
     console.error('Error assigning protocol:', String(error));
-    return NextResponse.json({ error: 'Erro ao atribuir protocolo' }, { status: 500 });
+    return NextResponse.json({ error: 'Error assigning protocol' }, { status: 500 });
   }
 }
 
@@ -188,12 +193,12 @@ export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
     const patientId = searchParams.get('patientId');
-    const clinicSlug = searchParams.get('clinicSlug'); // Novo parâmetro para filtrar por clínica
+    const clinicSlug = searchParams.get('clinicSlug');
 
     // Buscar o usuário para verificar o role
     const user = await prisma.user.findUnique({
@@ -201,7 +206,7 @@ export async function GET(request: Request) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: 'Usuário não encontrado' }, { status: 404 });
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     let assignments;
@@ -280,7 +285,7 @@ export async function GET(request: Request) {
     } else {
       // Paciente vê apenas seus próprios protocolos
       if (!user.doctorId) {
-        return NextResponse.json({ error: 'Paciente não possui médico associado' }, { status: 400 });
+        return NextResponse.json({ error: 'Patient does not have an associated doctor' }, { status: 400 });
       }
 
       let whereClause: any = {
@@ -296,7 +301,7 @@ export async function GET(request: Request) {
         });
 
         if (!clinic) {
-          return NextResponse.json({ error: 'Clínica não encontrada' }, { status: 404 });
+          return NextResponse.json({ error: 'Clinic not found' }, { status: 404 });
         }
 
         // Filtrar protocolos de médicos que pertencem a essa clínica

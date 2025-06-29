@@ -22,15 +22,13 @@ export async function GET() {
 
     // Get statistics
     const [totalPatients, totalProtocols] = await Promise.all([
-      // Count patients linked to this doctor (via UserProtocol)
-      prisma.userProtocol.groupBy({
-        by: ['userId'],
+      // Count active patient relationships
+      prisma.doctorPatientRelationship.count({
         where: {
-          protocol: {
-            doctorId: doctor.id
-          }
+          doctorId: doctor.id,
+          isActive: true
         }
-      }).then(groups => groups.length),
+      }),
       
       // Count protocols created by this doctor
       prisma.protocol.count({

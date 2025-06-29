@@ -21,12 +21,12 @@ export async function POST(
 
     if (!token || !email || !answers) {
       return NextResponse.json(
-        { error: "Dados inválidos" },
+        { error: "Invalid data" },
         { status: 400 }
       );
     }
 
-    // Busca a resposta pelo token
+    // Find response by token
     const response = await prisma.onboardingResponse.findUnique({
       where: { token },
       include: {
@@ -40,20 +40,20 @@ export async function POST(
 
     if (!response) {
       return NextResponse.json(
-        { error: "Formulário não encontrado" },
+        { error: "Form not found" },
         { status: 404 }
       );
     }
 
-    // Se já foi completado, retorna erro
+    // If already completed, return error
     if (response.status === "COMPLETED") {
       return NextResponse.json(
-        { error: "Este formulário já foi preenchido" },
+        { error: "This form has already been submitted" },
         { status: 400 }
       );
     }
 
-    // Valida se todas as perguntas obrigatórias foram respondidas
+    // Validate if all required questions were answered
     const requiredSteps = response.template.steps.filter((step: OnboardingStep) => step.required);
     const answeredStepIds = answers.map((a: Answer) => a.stepId);
     const missingRequired = requiredSteps.some(
@@ -62,12 +62,12 @@ export async function POST(
 
     if (missingRequired) {
       return NextResponse.json(
-        { error: "Responda todas as perguntas obrigatórias" },
+        { error: "Please answer all required questions" },
         { status: 400 }
       );
     }
 
-    // Atualiza o email e status da resposta
+    // Update email and response status
     await prisma.onboardingResponse.update({
       where: { id: response.id },
       data: {
@@ -77,7 +77,7 @@ export async function POST(
       },
     });
 
-    // Salva as respostas
+    // Save answers
     await prisma.onboardingAnswer.createMany({
       data: answers.map((answer: Answer) => ({
         responseId: response.id,
@@ -88,9 +88,9 @@ export async function POST(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Erro ao submeter respostas:", error);
+    console.error("Error submitting responses:", error);
     return NextResponse.json(
-      { error: "Erro ao submeter respostas" },
+      { error: "Error submitting responses" },
       { status: 500 }
     );
   }

@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { hash } from 'bcryptjs';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
+import { SYSTEM_LOGO_URL } from '@/config/constants';
 
 // Configuração do transporter de email
 if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_FROM) {
@@ -432,9 +433,7 @@ export async function POST(request: Request) {
                 <p style="color: #999999; font-size: 11px; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
                   Powered by
                 </p>
-                <p style="color: #666666; font-size: 14px; margin: 0;">
-                  CXLUS
-                </p>
+                <img src="${SYSTEM_LOGO_URL}" alt="CXLUS" style="height: 20px; opacity: 0.7;">
               </div>
             </div>
           </div>

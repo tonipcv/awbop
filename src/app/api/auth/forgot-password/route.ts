@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import { SYSTEM_LOGO_URL } from '@/config/constants';
 
 if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_FROM) {
   throw new Error('Missing SMTP configuration environment variables');
@@ -186,7 +187,7 @@ export async function POST(req: Request) {
                   <p style="color: #999999; font-size: 11px; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
                     Powered by
                   </p>
-                  <img src="${baseUrl}/logo.png" alt="CXLUS" style="height: 20px; opacity: 0.7;">
+                  <img src="${SYSTEM_LOGO_URL}" alt="CXLUS" style="height: 20px; opacity: 0.7;">
                 </div>
               </div>
             </div>

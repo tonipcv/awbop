@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
+import { SYSTEM_LOGO_URL } from '@/config/constants';
 
 // Configuração do transporter de email
 if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_FROM) {
@@ -232,31 +233,29 @@ export async function POST(request: NextRequest) {
             <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
               <h3 style="color: #059669; margin: 0 0 10px 0;">🎉 ${subscriptionType === 'TRIAL' ? 'Your Free Trial' : 'Your Active Subscription'}</h3>
               <p style="color: #475569; margin: 0; font-size: 14px;">
-                Your account is already configured with the Basic plan ${subscriptionType === 'TRIAL' ? 'in trial period' : 'active'} which includes:
+                Your account is already configured with the Basic plan ${subscriptionType === 'TRIAL' ? 'in trial period' : 'active'}
               </p>
-              <ul style="color: #475569; font-size: 14px; margin: 10px 0;">
-                <li>Up to 50 patients</li>
-                <li>Up to 10 protocols</li>
-                <li>Up to 5 courses</li>
-                <li>Up to 30 products</li>
-                ${subscriptionType === 'TRIAL' ? `<li>${trialDays} days free trial</li>` : '<li>Active subscription immediately</li>'}
-              </ul>
             </div>
-            
-            <p style="color: #64748b; font-size: 14px; line-height: 1.6;">
-              <strong>Important:</strong> This link is valid for 7 days. If you don't set your password within this period, you'll need to request a new invite.
-            </p>
-            
-            <p style="color: #64748b; font-size: 14px; line-height: 1.6;">
-              If you didn't request this invite, you can safely ignore this email.
-            </p>
-            
-            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
-            
-            <p style="color: #94a3b8; font-size: 12px; text-align: center;">
-              CXLUS - Medical Platform<br>
-              This is an automated email, please do not reply.
-            </p>
+
+            <!-- Footer -->
+            <div style="background-color: #f8f8f8; padding: 30px; text-align: center; border-top: 1px solid #e0e0e0; margin-top: 30px;">
+              <div style="margin-bottom: 20px;">
+                <p style="color: #666666; font-size: 14px; margin: 0;">
+                  This email was sent by CXLUS
+                </p>
+                <p style="color: #999999; font-size: 12px; margin: 8px 0 0 0;">
+                  This is an automated message, please do not reply to this email.
+                </p>
+              </div>
+              
+              <!-- System Logo -->
+              <div style="padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                <p style="color: #999999; font-size: 11px; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">
+                  Powered by
+                </p>
+                <img src="${SYSTEM_LOGO_URL}" alt="CXLUS" style="height: 20px; opacity: 0.7;">
+              </div>
+            </div>
           </div>
         `
       });

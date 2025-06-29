@@ -206,32 +206,8 @@ export default function ProtocolsPage() {
         setLoading(true);
         setError(null);
 
-        // Tentar detectar o slug da clínica do localStorage ou sessionStorage
-        let clinicSlug = null;
-        if (typeof window !== 'undefined') {
-          clinicSlug = sessionStorage.getItem('clinicSlug') || localStorage.getItem('clinicSlug');
-        }
-
-        // Se não encontrou no storage, tentar buscar via API
-        if (!clinicSlug) {
-          try {
-            const clinicResponse = await fetch('/api/patient/clinic-slug');
-            if (clinicResponse.ok) {
-              const clinicData = await clinicResponse.json();
-              clinicSlug = clinicData.clinicSlug;
-            }
-          } catch (error) {
-            console.log('Could not fetch clinic slug, using default behavior');
-          }
-        }
-
-        // Construir URL da API com ou sem clinicSlug
-        let apiUrl = '/api/protocols/assign';
-        if (clinicSlug) {
-          apiUrl += `?clinicSlug=${encodeURIComponent(clinicSlug)}`;
-        }
-
-        const response = await fetch(apiUrl);
+        // Use the correct API endpoint that supports multiple doctors
+        const response = await fetch('/api/protocols/assignments');
         
         if (!response.ok) {
           throw new Error('Failed to fetch protocols');
@@ -242,6 +218,7 @@ export default function ProtocolsPage() {
           id: p.protocol.id,
           name: p.protocol.name,
           status: p.status,
+          doctorName: p.protocol.doctor?.name,
           onboardingTemplateId: p.protocol.onboardingTemplateId
         })));
         setProtocols(data || []);

@@ -14,16 +14,27 @@ export async function GET(request: NextRequest) {
     // Get current user (patient)
     const patient = await prisma.user.findUnique({
       where: { id: session.user.id },
-      select: { doctorId: true }
+      include: {
+        patientRelationships: {
+          where: {
+            isActive: true,
+            isPrimary: true
+          },
+          select: {
+            doctorId: true
+          }
+        }
+      }
     });
 
-    if (!patient?.doctorId) {
-      return NextResponse.json({ error: 'No doctor assigned' }, { status: 404 });
+    const primaryRelationship = patient?.patientRelationships[0];
+    if (!primaryRelationship) {
+      return NextResponse.json({ error: 'No primary doctor assigned' }, { status: 404 });
     }
 
     // Get doctor information with basic details only (avoiding clinic for now)
     const doctor = await prisma.user.findUnique({
-      where: { id: patient.doctorId },
+      where: { id: primaryRelationship.doctorId },
       select: {
         id: true,
         name: true,
@@ -32,18 +43,10 @@ export async function GET(request: NextRequest) {
         phone: true,
         createdAt: true,
         role: true,
-        // Get patients count
-        patients: {
+        // Get patients count via relationships
+        doctorRelationships: {
           where: { isActive: true },
           select: { id: true }
-        },
-        // Get protocols count
-        _count: {
-          select: {
-            patients: {
-              where: { isActive: true }
-            }
-          }
         }
       }
     });
@@ -61,7 +64,7 @@ export async function GET(request: NextRequest) {
       activeProtocolsCount = await prisma.userProtocol.count({
         where: {
           isActive: true,
-          user: {
+          protocol: {
             doctorId: doctor.id
           }
         }
@@ -70,13 +73,7 @@ export async function GET(request: NextRequest) {
       // Get total protocols count
       protocolStats = await prisma.protocol.aggregate({
         where: {
-          assignments: {
-            some: {
-              user: {
-                doctorId: doctor.id
-              }
-            }
-          }
+          doctorId: doctor.id
         },
         _count: true
       });
@@ -94,7 +91,7 @@ export async function GET(request: NextRequest) {
       phone: doctor.phone,
       createdAt: doctor.createdAt.toISOString(),
       role: doctor.role,
-      totalPatients: doctor.patients.length,
+      totalPatients: doctor.doctorRelationships.length,
       totalProtocols: protocolStats._count || 0,
       activeProtocols: activeProtocolsCount,
       clinic: null // Temporarily disabled until clinic table issues are resolved

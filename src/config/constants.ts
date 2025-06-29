@@ -1,0 +1,1 @@
+export const SYSTEM_LOGO_URL = 'https://boop-minioboop.dpbdp1.easypanel.host/futurostech/system/logo.png'; 

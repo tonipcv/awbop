@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from 'next/image';
 import Link from "next/link";
 import { ArrowRight } from 'lucide-react';
+import { SYSTEM_LOGO_URL } from '@/config/constants';
 
 function SetPasswordForm() {
   const router = useRouter();
@@ -76,7 +77,7 @@ function SetPasswordForm() {
             <div className="text-center">
               <div className="flex justify-center items-center mb-4">
                 <Image
-                  src="/logo.png"
+                  src={SYSTEM_LOGO_URL}
                   alt="Logo"
                   width={40}
                   height={13}
@@ -108,7 +109,7 @@ function SetPasswordForm() {
           <div className="text-center mb-8">
             <div className="flex justify-center items-center mb-4">
               <Image
-                src="/logo.png"
+                src={SYSTEM_LOGO_URL}
                 alt="Logo"
                 width={40}
                 height={13}

@@ -8,37 +8,41 @@ import { NextRequest } from 'next/server';
 // GET /api/protocols/assignments - Listar protocolos atribuídos ao paciente
 export async function GET(request: NextRequest) {
   try {
-    // Tentar autenticação web primeiro, depois mobile
-    let userId: string | null = null;
-    
     const session = await getServerSession(authOptions);
-    if (session?.user?.id) {
-      userId = session.user.id;
-    } else {
-      // Tentar autenticação mobile
-      const mobileUser = await verifyMobileAuth(request);
-      if (mobileUser?.id) {
-        userId = mobileUser.id;
+    
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // 1. Buscar o paciente e seus médicos ativos
+    const patient = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      include: {
+        patientRelationships: {
+          where: { isActive: true },
+          include: {
+            doctor: true
+          }
+        }
       }
-    }
-
-    if (!userId) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
-    }
-
-    // Buscar o usuário para verificar se é paciente
-    const user = await prisma.user.findUnique({
-      where: { id: userId }
     });
 
-    if (!user || user.role !== 'PATIENT') {
-      return NextResponse.json({ error: 'Acesso negado. Apenas pacientes podem acessar esta funcionalidade.' }, { status: 403 });
+    if (!patient || patient.role !== 'PATIENT') {
+      return NextResponse.json({ error: 'Access denied. Only patients can access this feature.' }, { status: 403 });
     }
 
-    // Buscar protocolos atribuídos ao paciente
+    // 2. Pegar IDs de todos os médicos ativos
+    const activeDoctorIds = patient.patientRelationships.map(rel => rel.doctorId);
+
+    // 3. Buscar todos os protocolos atribuídos por qualquer médico ativo
     const assignments = await prisma.userProtocol.findMany({
       where: {
-        userId: userId
+        userId: patient.id,
+        protocol: {
+          doctorId: {
+            in: activeDoctorIds
+          }
+        }
       },
       include: {
         protocol: {
@@ -55,11 +59,7 @@ export async function GET(request: NextRequest) {
               include: {
                 sessions: {
                   include: {
-                    tasks: {
-                      orderBy: {
-                        orderIndex: 'asc'
-                      }
-                    }
+                    tasks: true
                   },
                   orderBy: {
                     sessionNumber: 'asc'
@@ -78,16 +78,9 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    console.log('Assignments:', assignments.map(a => ({
-      id: a.protocol.id,
-      name: a.protocol.name,
-      consultation_date: a.protocol.consultation_date,
-      preConsultationTemplateId: a.preConsultationTemplateId
-    })));
-
     return NextResponse.json(assignments);
   } catch (error) {
-    console.error('Error fetching patient protocol assignments:', error);
-    return NextResponse.json({ error: 'Erro ao buscar protocolos do paciente' }, { status: 500 });
+    console.error('Error fetching patient protocols:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 } 
